@@ -1,0 +1,26 @@
+<hr />
+<h4>?? Comments</h4>
+
+<!-- Show comment form only if logged in -->
+@if (Context.Session.GetString("UserID") != null)
+{
+    <form asp-controller="Comments" asp-action="Add" method="post" class="mb-4">
+        <input type="hidden" name="episodeId" value="@Model.EpisodeID" />
+        <input type="hidden" name="podcastId" value="@Model.PodcastID" />
+        <input type="hidden" name="userId" value="@Context.Session.GetString("UserID")" />
+
+        <div class="input-group">
+            <input type="text" name="text" class="form-control" placeholder="Write a comment..." required />
+            <button type="submit" class="btn btn-primary">Post</button>
+        </div>
+    </form>
+}
+else
+{
+    <p class="text-muted">
+        Please <a asp-controller="Users" asp-action="Login">log in</a> to comment.
+    </p>
+}
+
+<!-- Load comments from DynamoDB -->
+@await Html.PartialAsync("_CommentsList", ViewData["Comments"] as List<Dictionary<string, Amazon.DynamoDBv2.Model.AttributeValue>>)

@@ -1,0 +1,72 @@
+@model PodcastApp.Models.Episode
+
+@{
+    ViewData["Title"] = "Edit Episode";
+}
+
+<h1 class="text-center fw-bold text-primary mb-4">Edit Episode</h1>
+
+<div class="card shadow-sm p-4 mx-auto" style="max-width: 600px;">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <input type="hidden" asp-for="EpisodeID" />
+
+        <div class="mb-3">
+            <label asp-for="PodcastID" class="form-label fw-semibold">Podcast</label>
+            <select asp-for="PodcastID" class="form-select" asp-items="ViewBag.PodcastID"></select>
+            <span asp-validation-for="PodcastID" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label fw-semibold"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ReleaseDate" class="form-label fw-semibold"></label>
+            <input asp-for="ReleaseDate" type="datetime-local" class="form-control" />
+            <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Duration" class="form-label fw-semibold"></label>
+            <input asp-for="Duration" class="form-control" placeholder="Enter duration in minutes" />
+            <span asp-validation-for="Duration" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PlayCount" class="form-label fw-semibold"></label>
+            <input asp-for="PlayCount" class="form-control" readonly />
+            <small class="text-muted">Automatically updated when episodes are viewed.</small>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.AudioFileUrl))
+        {
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Current Media</label>
+                <p>
+                    <a href="@Model.AudioFileUrl" target="_blank" class="text-decoration-none text-primary">
+                        View Current File
+                    </a>
+                </p>
+            </div>
+        }
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Replace Media (optional)</label>
+            <input type="file" name="media" class="form-control" />
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary w-100 fw-semibold">Save Changes</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-3">
+        <a asp-action="Index" class="text-decoration-none text-secondary fw-semibold">? Back to List</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

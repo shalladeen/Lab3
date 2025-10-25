@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Home Page";
+    var username = HttpContextAccessor.HttpContext?.Session.GetString("Username");
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("UserRole");
+}
+
+<div class="container mt-5 text-center">
+    <h1 class="display-5 mb-3">🎧 Welcome to PodcastApp</h1>
+
+    @if (!string.IsNullOrEmpty(username))
+    {
+        <div class="alert alert-success">
+            👋 Hello, <strong>@username</strong>! You are logged in as
+            <strong><a href="#" class="text-decoration-none">@role</a></strong>.
+        </div>
+
+        @if (role == "Listener")
+        {
+            <div class="mt-4 d-flex flex-column align-items-center gap-3">
+                <a class="btn btn-primary w-50" asp-controller="Episodes" asp-action="Index">🎬 Browse Episodes</a>
+                <a class="btn btn-success w-50" asp-controller="Podcasts" asp-action="Index">🎙 Subscribe to Podcasts</a>
+                <a class="btn btn-info w-50" asp-controller="Comments" asp-action="Index">💬 Manage Comments</a>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="lead">Log in or register to start listening!</p>
+        <div class="mt-4 d-flex flex-column align-items-center gap-3">
+            <a class="btn btn-primary btn-lg w-50" asp-controller="Users" asp-action="Login">🔐 Login</a>
+            <a class="btn btn-outline-primary btn-lg w-50" asp-controller="Users" asp-action="Register">📝 Register</a>
+        </div>
+    }
+</div>

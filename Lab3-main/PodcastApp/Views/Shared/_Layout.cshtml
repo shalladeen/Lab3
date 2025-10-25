@@ -1,0 +1,175 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var userRole = HttpContextAccessor.HttpContext?.Session.GetString("UserRole");
+    var username = HttpContextAccessor.HttpContext?.Session.GetString("Username");
+    bool isLoggedIn = !string.IsNullOrEmpty(username);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PodcastApp</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PodcastApp.styles.css" asp-append-version="true" />
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            border-top: 2px solid #dee2e6;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #e3f2fd;
+        }
+
+        .main-container {
+            min-height: 80vh;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-primary" asp-controller="Home" asp-action="Index">
+                    🎧 PodcastApp
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                        @if (isLoggedIn)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+
+                            @* 🎧 Listener Navigation *@
+                            if (userRole == "Listener")
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="browseMenu"
+                                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Browse Episodes
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="browseMenu">
+                                        <li><a class="dropdown-item" asp-controller="Episodes" asp-action="Index">All Episodes</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Episodes" asp-action="Popular">Most Popular</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Episodes" asp-action="Recent">Most Recent</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Podcasts" asp-action="Index">
+                                        Subscribe to Podcasts
+                                    </a>
+                                </li>
+                            }
+
+                            @* 🎙 Podcaster Navigation *@
+                            else if (userRole == "Podcaster")
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="podcastMenu"
+                                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Manage Podcasts
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="podcastMenu">
+                                        <li><a class="dropdown-item" asp-controller="Podcasts" asp-action="Index">All Podcasts</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Podcasts" asp-action="Create">Add Podcast</a></li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="episodeMenu"
+                                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Manage Episodes
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="episodeMenu">
+                                        <li><a class="dropdown-item" asp-controller="Episodes" asp-action="Index">All Episodes</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Episodes" asp-action="Create">Add Episode</a></li>
+                                    </ul>
+                                </li>
+                            }
+
+                            @* 🛠 Admin Navigation *@
+                            else if (userRole == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Admin" asp-action="Dashboard">
+                                        Admin Dashboard
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <!-- Right Side Controls -->
+                    <ul class="navbar-nav">
+                        @if (isLoggedIn)
+                        {
+                            <li class="nav-item me-2">
+                                <span class="navbar-text text-secondary">
+                                    🎧 Hello, <strong>@username</strong> (<em>@userRole</em>)
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-danger btn-sm" asp-controller="Users" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Register">Register</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container main-container">
+        <main role="main" class="pb-3">
+            @RenderBody() @* Keep this so content loads correctly *@
+        </main>
+    </div>
+
+    <footer class="footer text-muted text-center py-3 mt-5">
+        <div class="container">
+            &copy; 2025 - <strong>PodcastApp</strong> |
+            <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

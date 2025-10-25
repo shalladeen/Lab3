@@ -1,0 +1,31 @@
+@model PodcastApp.Models.Podcast
+
+@{
+    ViewData["Title"] = "Delete Podcast";
+}
+
+<h1 class="text-danger fw-bold mb-4">Delete Podcast</h1>
+
+<h4>Are you sure you want to delete this podcast?</h4>
+
+<div class="card shadow-sm p-4 mb-4">
+    <dl class="row">
+        <dt class="col-sm-3 fw-semibold">Title</dt>
+        <dd class="col-sm-9">@Model.Title</dd>
+
+        <dt class="col-sm-3 fw-semibold">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+
+        <dt class="col-sm-3 fw-semibold">Creator ID</dt>
+        <dd class="col-sm-9">@Model.CreatorID</dd>
+
+        <dt class="col-sm-3 fw-semibold">Created Date</dt>
+        <dd class="col-sm-9">@Model.CreatedDate.ToLocalTime().ToString("f")</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="PodcastID" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-outline-secondary ms-2">Cancel</a>
+</form>

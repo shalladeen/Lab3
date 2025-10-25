@@ -1,0 +1,38 @@
+﻿@using Amazon.DynamoDBv2.Model
+@model List<Dictionary<string, AttributeValue>>
+
+@if (Model == null || Model.Count == 0)
+{
+    <p class="text-muted">💬 No comments yet. Be the first to share your thoughts!</p>
+}
+else
+{
+    <div class="list-group mb-3">
+        @foreach (var c in Model)
+        {
+            var userId = c.ContainsKey("UserID") ? c["UserID"].S : "Unknown";
+            var text = c.ContainsKey("Text") ? c["Text"].S : "";
+            var timestamp = c.ContainsKey("Timestamp") ? DateTime.Parse(c["Timestamp"].S).ToLocalTime() : DateTime.MinValue;
+
+            <div class="list-group-item">
+                <strong>@userId</strong>
+                <small class="text-muted">(@timestamp.ToString("g"))</small>
+                <p class="mt-1">@text</p>
+
+                @if (Context.Session.GetString("UserID") == userId)
+                {
+                    <form asp-controller="Comments" asp-action="Edit" method="post" class="mt-2">
+                        <input type="hidden" name="episodeId" value="@c["EpisodeID"].S" />
+                        <input type="hidden" name="commentId" value="@c["CommentID"].S" />
+
+                        <div class="input-group">
+                            <input type="text" name="userId" value="@userId" hidden />
+                            <input type="text" name="newText" class="form-control" placeholder="Edit your comment..." required />
+                            <button type="submit" class="btn btn-outline-primary btn-sm">💾 Save</button>
+                        </div>
+                    </form>
+                }
+            </div>
+        }
+    </div>
+}

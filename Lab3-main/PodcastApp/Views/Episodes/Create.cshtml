@@ -1,0 +1,76 @@
+@model PodcastApp.Models.Episode
+
+@{
+    ViewData["Title"] = "Create Episode";
+}
+
+<h1 class="mb-4 text-center text-primary fw-bold">Add New Episode</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm p-4">
+            <form asp-action="Create" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Select Podcast -->
+                <div class="mb-3">
+                    <label asp-for="PodcastID" class="form-label fw-semibold">Podcast</label>
+                    <select asp-for="PodcastID" class="form-select" asp-items="ViewBag.PodcastID">
+                        <option value="">-- Select Podcast --</option>
+                    </select>
+                    <span asp-validation-for="PodcastID" class="text-danger"></span>
+                </div>
+
+                <!-- Title -->
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label fw-semibold"></label>
+                    <input asp-for="Title" class="form-control" placeholder="Enter episode title" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label fw-semibold"></label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter a brief description"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <!-- Release Date -->
+                <div class="mb-3">
+                    <label asp-for="ReleaseDate" class="form-label fw-semibold">Release Date</label>
+                    <input asp-for="ReleaseDate" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                </div>
+
+                <!-- Duration -->
+                <div class="mb-3">
+                    <label asp-for="Duration" class="form-label fw-semibold">Duration (minutes)</label>
+                    <input asp-for="Duration" class="form-control" placeholder="e.g. 45" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <!-- Media Upload -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Upload Audio / Video File</label>
+                    <input type="file" name="media" class="form-control" accept=".mp3,.wav,.mp4,.mov" />
+                    <small class="text-muted">Optional — will be stored in AWS S3</small>
+                </div>
+
+                <!-- Submit -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary fw-semibold">Create Episode</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-3">
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

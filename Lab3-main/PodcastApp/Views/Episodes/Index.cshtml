@@ -1,0 +1,79 @@
+@model IEnumerable<PodcastApp.Models.Episode>
+
+@{
+    ViewData["Title"] = "Episodes";
+}
+
+<h1 class="text-center fw-bold text-primary mb-4">Episodes</h1>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a asp-action="Create" class="btn btn-primary fw-semibold">?? Add New Episode</a>
+    <div>
+        <a asp-action="Recent" class="btn btn-outline-secondary btn-sm me-2">Recent</a>
+        <a asp-action="Popular" class="btn btn-outline-secondary btn-sm">Popular</a>
+    </div>
+</div>
+
+<table class="table table-striped table-hover align-middle shadow-sm">
+    <thead class="table-primary">
+        <tr>
+            <th>Podcast</th>
+            <th>Title</th>
+            <th>Release Date</th>
+            <th>Duration (min)</th>
+            <th>Play Count</th>
+            <th>Audio File</th>
+            <th style="width: 150px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @if (item.Podcast != null)
+                    {
+                        <span class="fw-semibold">@item.Podcast.Title</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Unknown</span>
+                    }
+                </td>
+
+                <td>@item.Title</td>
+                <td>@item.ReleaseDate.ToString("yyyy-MM-dd")</td>
+                <td>@item.Duration</td>
+                <td>@item.PlayCount</td>
+
+                <td>
+                    @if (!string.IsNullOrEmpty(item.AudioFileUrl))
+                    {
+                        <a href="@item.AudioFileUrl" target="_blank" class="text-decoration-none text-primary">
+                            ?? Play
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No file</span>
+                    }
+                </td>
+
+                <td>
+                    <div class="btn-group" role="group">
+                        <a asp-action="Details" asp-route-id="@item.EpisodeID" class="btn btn-sm btn-outline-info">View</a>
+                        <a asp-action="Edit" asp-route-id="@item.EpisodeID" class="btn btn-sm btn-outline-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.EpisodeID" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center mt-4">
+        No episodes available. <a asp-action="Create" class="fw-semibold text-primary">Add one now!</a>
+    </div>
+}
